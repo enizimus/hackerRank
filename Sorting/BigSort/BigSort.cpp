@@ -1,52 +1,92 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <list>
-
+#include <bits/stdc++.h>
 
 using namespace std;
 
-class player{
-
-public:
-    string name;
-    int age;
-
-};
-
-int main()
-{
-
-    player player1;
-    player1.name = "Eniz";
-    player1.age = 22;
-
-    player player2;
-    player1.name = "Emir";
-    player1.age = 28;
-
-    player player3;
-    player1.name = "Asimov";
-    player1.age = 45;
+vector<string> sortAndMerge(vector<string> unsortedLeft,vector<string> unsortedRight);
+vector<string> MergeSort(vector<string> unsorted);
+bool uporedi(string a, string b);
 
 
-
-
-
-
-    list<player> playerList = {player1, player2, player3};
-
-    playerList.remove(playerList.begin());
-
-    for(player i : playerList){
-        cout<<i.name<<" "<<i.age<<endl;
+int main(){
+    int n;
+    cin >> n;
+    vector<string> unsorted(n);
+    for(int i=0; i<n; i++){
+        cin>>unsorted[i];
     }
-    cout<<endl;
-
-
-
-
-
+    vector<string> sorted = MergeSort(unsorted);
+    for(int i=0; i<n; i++){
+        cout<<sorted[i]<<endl;
+    }
 
     return 0;
+}
+
+vector<string> MergeSort(vector<string> unsorted){
+
+    if(unsorted.size()==1)
+        return unsorted;
+
+    vector<string> first(&unsorted[0], &unsorted[unsorted.size()/2]);
+    vector<string> second(&unsorted[unsorted.size()/2], &unsorted[unsorted.size()]);
+
+    vector<string> fToSort = MergeSort(first);
+    vector<string> sToSort = MergeSort(second);
+
+    return sortAndMerge(fToSort, sToSort);
+
+}
+
+bool uporedi(string a, string b){
+    for(int i=0; i<a.length(); i++){
+        if(a[i]>b[i])
+            return true;
+        else if(a[i]<b[i])
+            return false;
+    }
+    return true;
+}
+
+vector<string> sortAndMerge(vector<string> unsortedLeft,vector<string> unsortedRight){
+
+    vector<string> sorted(unsortedLeft.size()+unsortedRight.size());
+    int i=0, j=0, k=0;
+    while(i<unsortedLeft.size() && j<unsortedRight.size()){
+
+        if(unsortedLeft[i].length()<unsortedRight[j].length()){
+            sorted[k]=unsortedLeft[i];
+            k++;
+            i++;
+        }
+        else if(unsortedLeft[i].length()>unsortedRight[j].length()){
+            sorted[k]=unsortedRight[j];
+            k++;
+            j++;
+        }
+        else{
+            if(uporedi(unsortedLeft[i],unsortedRight[j])){
+            sorted[k]=unsortedRight[j];
+            k++;
+            j++;
+            }
+            else{
+            sorted[k]=unsortedLeft[i];
+            k++;
+            i++;
+            }
+        }
+    }
+    while(i<unsortedLeft.size()){
+        sorted[k]=unsortedLeft[i];
+        i++;
+        k++;
+    }
+    while(j<unsortedRight.size()){
+        sorted[k]=unsortedRight[j];
+        j++;
+        k++;
+    }
+
+    return sorted;
+
 }
